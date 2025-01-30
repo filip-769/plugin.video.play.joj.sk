@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category>
+        <setting id="email" type="text" default="" label="Email" />
+        <setting id="password" type="text" option="hidden" default="" label="Heslo" />
+    </category>
+</settings>
