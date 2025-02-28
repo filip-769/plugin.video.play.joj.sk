@@ -182,7 +182,7 @@ def getItemsInScreen(id):
                 "type": "video" if item["tiles"]["items"][0]["itemType"] == "VIDEO" else "series",
                 "name": getFromLangs(item["tiles"]["items"][0]["name"]),
                 "description": getFromLangs(item["tiles"]["items"][0]["itemSpecificData"].get("description")),
-                "image": getImage(item["tiles"]["items"][0]["itemSpecificData"]["assets"])
+                "image": getImage(item["tiles"]["items"][0]["itemSpecificData"]["assets"]) if "assets" in item["tiles"]["items"][0]["itemSpecificData"] else "https://assets.tivio.studio/videos/" + item["tiles"]["items"][0]["id"] + "/cover"
             })
         elif(item["rowComponent"] == "ROW"):
             id = item["path"].split("/")[-1]
@@ -259,13 +259,6 @@ def getItemsInCategory(id):
                                     "op": "EQUAL",
                                     "value": {"stringValue": "PUBLISHED"}
                                 }
-                            },
-                            {
-                                "fieldFilter": {
-                                    "field": {"fieldPath": "transcodingStatus"},
-                                    "op": "EQUAL",
-                                    "value": {"stringValue": "ENCODING_DONE"}
-                                }
                             }
                         ]
                     }
@@ -293,7 +286,7 @@ def getItemsInCategory(id):
                     "type": "series",
                     "name": getFromLangsFirebase(series["document"]["fields"].get("name")),
                     "description": getFromLangsFirebase(series["document"]["fields"].get("description")),
-                    "image": getImageFirebase(series["document"]["fields"]["assets"])
+                    "image": getImageFirebase(series["document"]["fields"]["assets"]) if "assets" in series["document"]["fields"] else "https://assets.tivio.studio/videos/" + itemId + "/cover"
                 })
     
     return outList
@@ -323,12 +316,13 @@ def getItemsInSeries(id):
     return list
 
 def parseVideoFirebase(input):
+    id = input["document"]["name"].split("/")[-1]
     return {
         "type": "video",
-        "id": input["document"]["name"].split("/")[-1],
+        "id": id,
         "name": getFromLangsFirebase(input["document"]["fields"].get("name")) if getFromLangsFirebase(input["document"]["fields"].get("name")) is not None else "Epizóda " + input["document"]["fields"]["episodeNumber"]["integerValue"] if "episodeNumber" in input["document"]["fields"] else "Epizóda",
         "description": getFromLangsFirebase(input["document"]["fields"].get("description")),
-        "image": getImageFirebase(input["document"]["fields"]["assets"])
+        "image": getImageFirebase(input["document"]["fields"]["assets"]) if "assets" in input["document"]["fields"] else "https://assets.tivio.studio/videos/" + id + "/cover"
     }
 
 def getFromLangs(input):
@@ -408,7 +402,7 @@ def search(query, type):
             "type": "video" if type == "video" else "series",
             "name": getFromLangs(item.get("name")),
             "description": getFromLangs(item.get("description")),
-            "image": getImage(item["assets"]) if "assets" in item else None
+            "image": getImage(item["assets"]) if "assets" in item else "https://assets.tivio.studio/videos/" + item["objectID"] + "/cover"
         })
 
     return list
