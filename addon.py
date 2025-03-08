@@ -18,6 +18,17 @@ addon = xbmcaddon.Addon()
 __url__ = sys.argv[0]
 __handle__ = int(sys.argv[1])
 
+screens = {
+    "Domov": "screen-Lxye9UzYirbdU8gT6zIZ",
+    "Seriály": "screen-6u1OuNZpEZJ5mvFAr_kwA",
+    "Filmy": "screen-sDYvdxFDr6YuXBrJNq4Pf",
+    "Šport": "screen-jNBx-DFZSx6PazsFvlPol",
+    "Kino": "screen-Hu1-54YQnc69N4CTNRMcm",
+    "Podcasty": "screen-Z9EMIUtQqNUU-C-f8lRVz",
+    "Dokumenty": "screen-d_xouIReAph2uSRkR70eb",
+    "Deti": "screen-vmptBEawEZaKP5VzokZeE"
+}
+
 def getToken(email, password):
     conn = http.client.HTTPSConnection("www.googleapis.com")
 
@@ -184,13 +195,12 @@ def getItemsInScreen(id):
                 "description": getFromLangs(item["tiles"]["items"][0]["itemSpecificData"].get("description")),
                 "image": getImage(item["tiles"]["items"][0]["itemSpecificData"]["assets"]) if "assets" in item["tiles"]["items"][0]["itemSpecificData"] else "https://assets.tivio.studio/videos/" + item["tiles"]["items"][0]["id"] + "/cover"
             })
-        elif(item["rowComponent"] == "ROW"):
-            id = item["path"].split("/")[-1]
+        elif(item["rowComponent"] == "ROW" and id != screens["Podcasty"]):
             name = getFromLangs(item["name"])
 
             if(name != "Live TV" and name != "Pokračovať v sledovaní"):
                 list.append({
-                    "id": id,
+                    "id": item["path"].split("/")[-1],
                     "name": name,
                     "type": "category"
                 })
@@ -305,7 +315,7 @@ def getItemsInSeries(id):
 
     for item in responseJson["fields"]["metadata"]["arrayValue"]["values"]:
         if(item["mapValue"]["fields"]["key"]["stringValue"] == "availableSeasons"):
-            for season in item["mapValue"]["fields"]["value"]["arrayValue"]["values"]:
+            for season in sorted(item["mapValue"]["fields"]["value"]["arrayValue"]["values"], key=lambda x: int(x["mapValue"]["fields"]["seasonNumber"]["integerValue"])):
                 list.append({
                     "id": id,
                     "season": season["mapValue"]["fields"]["seasonNumber"]["integerValue"],
@@ -361,6 +371,8 @@ def getImage(assets):
                 return tagData["@1"]["background"]
 
 def getImageFirebase(assets):
+    if "mapValue" not in assets or "fields" not in assets["mapValue"]:
+        return None
     for key in imageKeys:
         if key in assets["mapValue"]["fields"]:
             tagData = assets["mapValue"]["fields"][key]
@@ -458,7 +470,8 @@ def renderList(list):
             if item["type"] == "video":
                 li = xbmcgui.ListItem(item["name"])
 
-                li.setArt({"poster": item["image"]})
+                if "image" in item and item["image"] is not None:
+                    li.setArt({"poster": item["image"]})
 
                 info = {}
                 if "name" in item and item["name"] is not None:
@@ -522,7 +535,12 @@ def router(paramString):
         elif params["action"] == "getItemsInCategory":
             renderList(getItemsInCategory(params["id"]))
         elif params["action"] == "getItemsInSeries":
-            renderList(getItemsInSeries(params["id"]))
+            list = getItemsInSeries(params["id"])
+
+            if len(list) == 1:
+                renderList(getItemsInSeason(params["id"], list[0]["season"]))
+            else:
+                renderList(list)
         elif params["action"] == "getItemsInSeason":
             renderList(getItemsInSeason(params["id"], params["season"]))
         elif params["action"] == "play":
@@ -628,16 +646,6 @@ def router(paramString):
 
             renderList(list)
     else:
-        screens = {
-            "Domov": "screen-Lxye9UzYirbdU8gT6zIZ",
-            "Seriály": "screen-6u1OuNZpEZJ5mvFAr_kwA",
-            "Filmy": "screen-sDYvdxFDr6YuXBrJNq4Pf",
-            "Šport": "screen-jNBx-DFZSx6PazsFvlPol",
-            "Podcasty": "screen-Z9EMIUtQqNUU-C-f8lRVz",
-            "Dokumenty": "screen-d_xouIReAph2uSRkR70eb",
-            "Deti": "screen-vmptBEawEZaKP5VzokZeE"
-        }
-
         for screen in screens:
             li = xbmcgui.ListItem(screen)
 
