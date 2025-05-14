@@ -6,11 +6,8 @@ import json
 import http.client
 import time
 from urllib.parse import parse_qsl
+import StorageServer
 
-try:
-    import StorageServer
-except:
-    import storageserverdummy as StorageServer
 cache = StorageServer.StorageServer("plugin.video.play.joj.sk", 1)
 
 addon = xbmcaddon.Addon()
@@ -20,12 +17,11 @@ __handle__ = int(sys.argv[1])
 
 screens = {
     "Domov": "screen-Lxye9UzYirbdU8gT6zIZ",
-    "Seriály": "screen-6u1OuNZpEZJ5mvFAr_kwA",
+    "Obsah zdarma": "screen-qwDpO53nYHvwN2Jhu94-g",
+    "MS 2025": "screen-ZYc9mUu-FVNKrSPsO6F71",
     "Filmy": "screen-sDYvdxFDr6YuXBrJNq4Pf",
+    "Seriály": "screen-6u1OuNZpEZJ5mvFAr_kwA",
     "Šport": "screen-jNBx-DFZSx6PazsFvlPol",
-    "Kino": "screen-Hu1-54YQnc69N4CTNRMcm",
-    "Podcasty": "screen-Z9EMIUtQqNUU-C-f8lRVz",
-    "Dokumenty": "screen-d_xouIReAph2uSRkR70eb",
     "Deti": "screen-vmptBEawEZaKP5VzokZeE"
 }
 
@@ -195,10 +191,10 @@ def getItemsInScreen(id):
                 "description": getFromLangs(item["tiles"]["items"][0]["itemSpecificData"].get("description")),
                 "image": getImage(item["tiles"]["items"][0]["itemSpecificData"]["assets"]) if "assets" in item["tiles"]["items"][0]["itemSpecificData"] else "https://assets.tivio.studio/videos/" + item["tiles"]["items"][0]["id"] + "/cover"
             })
-        elif(item["rowComponent"] == "ROW" and id != screens["Podcasty"]):
+        elif(item["rowComponent"] == "ROW"):
             name = getFromLangs(item["name"])
 
-            if(name != "Live TV" and name != "Pokračovať v sledovaní"):
+            if(name != "Live TV" and name != "Pokračovať v sledovaní" and name != "Môj Zoznam"):
                 list.append({
                     "id": item["path"].split("/")[-1],
                     "name": name,
