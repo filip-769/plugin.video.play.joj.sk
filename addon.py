@@ -309,7 +309,7 @@ def getItemsInSeries(id):
     list = []
 
     for item in responseJson["fields"]["metadata"]["arrayValue"]["values"]:
-        if(item["mapValue"]["fields"]["key"]["stringValue"] == "availableSeasons"):
+        if(item["mapValue"]["fields"]["key"]["stringValue"] == "availableSeasons" and item["mapValue"]["fields"]["value"]["arrayValue"].get("values") is not None):
             for season in sorted(item["mapValue"]["fields"]["value"]["arrayValue"]["values"], key=lambda x: int(x["mapValue"]["fields"]["seasonNumber"]["integerValue"])):
                 list.append({
                     "id": id,
@@ -534,6 +534,8 @@ def router(paramString):
 
             if len(list) == 1:
                 renderList(getItemsInSeason(params["id"], list[0]["season"]))
+            elif len(list) == 0:
+                renderList(getItemsInSeason(params["id"], 1))
             else:
                 renderList(list)
         elif params["action"] == "getItemsInSeason":
