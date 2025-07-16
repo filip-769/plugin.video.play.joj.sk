@@ -17,9 +17,9 @@ __handle__ = int(sys.argv[1])
 
 screens = {
     "Domov": "screen-Lxye9UzYirbdU8gT6zIZ",
-    "Obsah zdarma": "screen-qwDpO53nYHvwN2Jhu94-g",
     "Filmy": "screen-sDYvdxFDr6YuXBrJNq4Pf",
     "Seriály": "screen-6u1OuNZpEZJ5mvFAr_kwA",
+    "Spravodajstvo": "screen-uTwlSTUjxtlq9fJaT9L_2",
     "Šport": "screen-jNBx-DFZSx6PazsFvlPol",
     "Deti": "screen-vmptBEawEZaKP5VzokZeE"
 }
