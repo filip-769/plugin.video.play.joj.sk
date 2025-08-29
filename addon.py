@@ -466,7 +466,7 @@ def renderList(list):
                 li = xbmcgui.ListItem(item["name"])
 
                 if "image" in item and item["image"] is not None:
-                    li.setArt({"poster": item["image"]})
+                    li.setArt({"poster": item["image"], "fanart": item["image"]})
 
                 info = {}
                 if "name" in item and item["name"] is not None:
@@ -491,7 +491,7 @@ def renderList(list):
                 li = xbmcgui.ListItem(item["name"])
 
                 if "image" in item and item["image"] is not None:
-                    li.setArt({"poster": item["image"], "icon": "DefaultTVShows.png"})
+                    li.setArt({"poster": item["image"], "fanart": item["image"], "icon": "DefaultTVShows.png"})
                 else:
                     li.setArt({"icon": "DefaultTVShows.png"})
                 
@@ -510,8 +510,10 @@ def renderList(list):
                 xbmcplugin.addDirectoryItem(handle=__handle__, url="{0}?action=getItemsInCategory&id={1}".format(__url__, item["id"]), listitem=li, isFolder=True)
             elif item["type"] == "channel":
                 li = xbmcgui.ListItem(item["name"])
+                
+                non_cached_image = item["preview"] + "?v=" + str(time.time())
 
-                li.setArt({"poster": item["preview"] + "?v=" + str(time.time()), "icon": item["logo"]})
+                li.setArt({"poster": non_cached_image, "fanart": non_cached_image, "icon": item["logo"]})
 
                 li.setProperty("IsPlayable", "true")
 
