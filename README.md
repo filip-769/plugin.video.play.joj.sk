@@ -1,5 +1,3 @@
-
-
 # Joj Play pre Kodi
 
 Tento (neoficiálny) doplnok umožňuje používať Joj Play cez Kodi.

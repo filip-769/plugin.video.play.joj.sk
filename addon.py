@@ -191,7 +191,7 @@ def getItemsInScreen(id):
                 "image": getImage(item["tiles"]["items"][0]["itemSpecificData"]["assets"]) if "assets" in item["tiles"]["items"][0]["itemSpecificData"] else "https://assets.tivio.studio/videos/" + item["tiles"]["items"][0]["id"] + "/cover"
             })
         elif(item["rowComponent"] == "ROW"):
-            name = getFromLangs(item["name"])
+            name = getFromLangs(item["name"]).removeprefix("🔴 ")
 
             if(name != "Live TV" and name != "Pokračovať v sledovaní" and name != "Môj Zoznam"):
                 list.append({
@@ -334,14 +334,11 @@ def getFromLangs(input):
     if isinstance(input, str) or input is None:
         return input
 
-    return (
-        input.get("sk") 
-        if input.get("sk") is not None 
-        else (input.get("cs") if input.get("cs") is not None else input.get("en"))
-    )
+    return input.get("sk") or input.get("cs") or input.get("en")
+
 
 def getFromLangsFirebase(input):
-    if input is None:
+    if not input:
         return None
 
     if "stringValue" in input:
@@ -350,10 +347,12 @@ def getFromLangsFirebase(input):
     if "mapValue" not in input:
         return None
 
+    fields = input["mapValue"]["fields"]
+
     return (
-        input["mapValue"]["fields"]["sk"]["stringValue"]
-        if "sk" in input["mapValue"]["fields"]
-        else (input["mapValue"]["fields"]["cs"]["stringValue"] if "cs" in input["mapValue"]["fields"] else input["mapValue"]["fields"]["en"]["stringValue"])
+        fields.get("sk", {}).get("stringValue")
+        or fields.get("cs", {}).get("stringValue")
+        or fields.get("en", {}).get("stringValue")
     )
 
 imageKeys = ["video_detail", "tag_detail", "cover", "tag_landscape_cover", "banner", "banner_mobile", "portrait", "tag_banner", "tag_banner_mobile", "tag_portrait_cover", "background_banner_mobile"]
@@ -562,84 +561,84 @@ def router(paramString):
                     "type": "channel",
                     "name": "JOJ",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/101/categories/screenshot/1.jpg",
-                    "logo": "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/tvjoj.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/joj.png"
                 },
                 {
                     "id": "60K9GwR6CLApIHVyNYOj",
                     "type": "channel",
                     "name": "JOJ Plus",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/102/categories/screenshot/1.jpg",
-                    "logo": "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/jojplus.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/jojplus.png"
                 },
                 {
                     "id": "0D9v2CuujVAlLJJTyLWd",
                     "type": "channel",
-                    "name": "WAU",
+                    "name": "JOJ Krimi",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/103/categories/screenshot/1.jpg",
-                    "logo": "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/wautv.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/jojkrimi.png"
                 },
                 {
                     "id": "7tl6We5FhLyCfZcmSG6F",
                     "type": "channel",
                     "name": "JOJ 24",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/111/categories/screenshot/1.jpg",
-                    "logo": "https://i.ibb.co/fV5RJx6G/joj24.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/joj24.png"
                 },
                 {
                     "id": "OE8iUSCBeLn8CIb0mL57",
                     "type": "channel",
                     "name": "JOJ Šport",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/110/categories/screenshot/1.jpg",
-                    "logo": "https://i.ibb.co/wFqgKVzN/jojsport.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/jojsport.png"
                 },
                 {
                     "id": "XA7YXR0HIuS4HGVgSZli",
                     "type": "channel",
                     "name": "JOJ Šport 2",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/118/categories/screenshot/1.jpg",
-                    "logo": "https://i.ibb.co/pr5mtbP2/jojsport2.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/jojsport2.png"
                 },
                 {
                     "id": "vSmKCe7UZp40PvCLXvtb",
                     "type": "channel",
                     "name": "JOJ Svet",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/114/categories/screenshot/1.jpg",
-                    "logo": "https://i.ibb.co/wh64Gf8X/jojsvet.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/jojsvet.png"
                 },
                 {
                     "id": "oALPnvtbTB4yuM4cLpnF",
                     "type": "channel",
                     "name": "JOJko",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/104/categories/screenshot/1.jpg",
-                    "logo": "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/jojko.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/jojko.png"
                 },
                 {
                     "id": "7oGizuVUXRJGckpoVGUB",
                     "type": "channel",
                     "name": "JOJ Cinema",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/105/categories/screenshot/1.jpg",
-                    "logo": "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/jojcinema.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/jojcinema.png"
                 },
                 {
                     "id": "aYB0bZQo5X5BuuaXl43H",
                     "type": "channel",
                     "name": "CS Film",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/106/categories/screenshot/1.jpg",
-                    "logo": "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/csfilm.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/csfilm.png"
                 },
                 {
                     "id": "UY5IgHcFriJV4Dh54RCS",
                     "type": "channel",
                     "name": "CS History",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/107/categories/screenshot/1.jpg",
-                    "logo": "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/cshistory.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/cshistory.png"
                 },
                 {
                     "id": "cIM4bKpVNVziiCrs5LJk",
                     "type": "channel",
                     "name": "CS Mystery",
                     "preview": "https://cnt.iptv.joj.sk/contentserver/contents/108/categories/screenshot/1.jpg",
-                    "logo": "https://raw.githubusercontent.com/MarhyCZ/picons/refs/heads/master/640/csmystery.png"
+                    "logo": "https://cdn.dobes.pw/tvp/640/csmystery.png"
                 }
             ]
 
